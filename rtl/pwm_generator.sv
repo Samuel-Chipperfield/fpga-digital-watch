@@ -8,19 +8,17 @@ module pwm_generator #(
     input  logic rst,
     output logic pwm_out
 );
-  localparam logic [25:0] Dutycycles = 26'(DUTY_CYCLES);
-  logic [25:0] count;
+
+  localparam int CountWidth = (PERIOD_CYCLES > 1) ? $clog2(PERIOD_CYCLES) + 1 : 1;
+  logic [CountWidth-1:0] count;
   mod_n_counter #(
       .N(PERIOD_CYCLES),
-      .WIDTH(26)
+      .WIDTH(CountWidth)
   ) u (
       .clk(clk),
       .rst(rst),
       .enable(1'b1),
       .count(count)
   );
-  always_comb begin
-    if (count == Dutycycles) pwm_out = 1'b0;
-    else if (count == 0) pwm_out = 1'b1;
-  end
+  assign pwm_out = 1'(count < CountWidth'(DUTY_CYCLES));
 endmodule
