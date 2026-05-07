@@ -20,9 +20,7 @@ module up_down_counter_rst #(
     else begin
       if (enable == 1) begin
         if (up == 1) next_count = (count == Max) ? 0 : count + WIDTH'(1);
-        else begin
-          next_count = (count == 0) ? Max : count - WIDTH'(1);
-        end
+        else next_count = (count == 0) ? Max : count - WIDTH'(1);
       end else next_count = count;
     end
   end

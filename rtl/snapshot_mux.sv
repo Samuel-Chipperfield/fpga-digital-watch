@@ -8,11 +8,11 @@ module snapshot_mux #(
     input logic [WIDTH-1:0] d,
     output logic [WIDTH-1:0] q
 );
-  logic [WIDTH-1:0] e;
-  always_ff @(posedge hold) e <= d;
-  always_comb begin
-    if (hold == 0) q = d;
-    else q = e;
-  end
+  logic [WIDTH-1:0] e = '0;
+
+  always_ff @(posedge clk) if (!hold) e <= d;
+
+  always_comb q = hold ? e : d;
+
 
 endmodule
