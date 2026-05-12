@@ -36,7 +36,7 @@ module hms_counter #(
       .WIDTH(W_MINUTES)
   ) u_minute (
       .clk(clk),
-      .enable(second_rollover),
+      .enable(second_rollover && enable),
       .up(1'b1),
       .count(minutes)
   );
@@ -45,7 +45,7 @@ module hms_counter #(
       .WIDTH(W_HOURS)
   ) u_hour (
       .clk(clk),
-      .enable(second_rollover && minute_rollover),
+      .enable(second_rollover && minute_rollover && enable),
       .up(1'b1),
       .count(hours)
   );

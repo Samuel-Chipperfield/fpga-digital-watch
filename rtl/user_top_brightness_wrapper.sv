@@ -38,7 +38,7 @@ module user_top_brightness_wrapper #(
   logic [2:0] app_blanking;
   logic [CountWidth-1:0] count;
 
-  user_top #(
+  user_top_ #(
       .CYCLES_PER_SECOND(CYCLES_PER_SECOND)
   ) u_top (
       .clk(clk),

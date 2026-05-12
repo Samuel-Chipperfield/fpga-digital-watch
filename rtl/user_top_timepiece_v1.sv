@@ -124,16 +124,22 @@ module user_top_timepiece_v1 #(
       2'b01: begin
         sw_in = ui_top_in;
         ui_top_out = sw_out;
+        watch_in = ui_top_in_no_buttons;
+        timer_in = ui_top_in_no_buttons;
       end
       //timer
       2'b11: begin
-        timer_in   = ui_top_in;
+        timer_in = ui_top_in;
         ui_top_out = timer_out;
+        watch_in = ui_top_in_no_buttons;
+        sw_in = ui_top_in_no_buttons;
       end
       // watch
       default: begin
-        watch_in   = ui_top_in_no_buttons;
+        watch_in = ui_top_in;
         ui_top_out = watch_out;
+        sw_in = ui_top_in_no_buttons;
+        timer_in = ui_top_in_no_buttons;
       end
     endcase
   end

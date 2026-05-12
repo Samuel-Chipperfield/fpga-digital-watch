@@ -24,14 +24,17 @@ module top_time_display_v1 #(
   logic [5:0] bin_minutes;
   logic [5:0] bin_seconds;
 
-  logic [7:0] hours;
-  logic [7:0] minutes;
-  logic [7:0] seconds;
+  logic [3:0] tens_hour;
+  logic [3:0] ones_hours;
+  logic [3:0] tens_minutes;
+  logic [3:0] ones_minutes;
+  logic [3:0] tens_seconds;
+  logic [3:0] ones_seconds;
 
   always_comb state[1:0] = SW[1:0];
 
   restartable_rate_generator #(
-      .CYCLE_COUNT(CYCLES_PER_SECOND / 2)
+      .CYCLE_COUNT(CYCLES_PER_SECOND)
   ) hz1 (
       .clk (CLOCK_50),
       .run (1'b1),
@@ -56,7 +59,7 @@ module top_time_display_v1 #(
       Hz_1:   adj_clk = tick_1hz;
       Hz_25:  adj_clk = tick_25hz;
       Hz_0:   adj_clk = tick_1khz;
-      Hz_500: adj_clk = CLOCK_50;
+      Hz_500: adj_clk = 1'b1;
     endcase
   end
   hms_counter one (
@@ -69,46 +72,58 @@ module top_time_display_v1 #(
 
   binary_to_bcd uhour (
       .bin ({2'b0, bin_hours}),
-      .tens(hours[7:4]),
-      .ones(hours[3:0])
+      .tens(tens_hour),
+      .ones(ones_hours)
   );
   binary_to_bcd uminute (
       .bin ({1'b0, bin_minutes}),
-      .tens(minutes[7:4]),
-      .ones(minutes[3:0])
+      .tens(tens_minutes),
+      .ones(ones_minutes)
   );
   binary_to_bcd usecond (
       .bin ({1'b0, bin_seconds}),
-      .tens(seconds[7:4]),
-      .ones(seconds[3:0])
+      .tens(tens_seconds),
+      .ones(ones_seconds)
   );
-  seven_segment tens_hours (
-      .digit(hours[7:4]),
+  seven_segment #(
+      .ACTIVE_LOW(32'd1)
+  ) tens_hours (
+      .digit(tens_hour),
       .blank(1'b0),
       .segments(HEX5)
   );
-  seven_segment ones_hours (
-      .digit(hours[3:0]),
+  seven_segment #(
+      .ACTIVE_LOW(32'd1)
+  ) ones_hour (
+      .digit(ones_hours),
       .blank(1'b0),
       .segments(HEX4)
   );
-  seven_segment tens_minutes (
-      .digit(minutes[7:4]),
+  seven_segment #(
+      .ACTIVE_LOW(32'd1)
+  ) tens_minute (
+      .digit(tens_minutes),
       .blank(1'b0),
       .segments(HEX3)
   );
-  seven_segment ones_minutes (
-      .digit(minutes[3:0]),
+  seven_segment #(
+      .ACTIVE_LOW(32'd1)
+  ) ones_minute (
+      .digit(ones_minutes),
       .blank(1'b0),
       .segments(HEX2)
   );
-  seven_segment tens_seconds (
-      .digit(seconds[7:4]),
+  seven_segment #(
+      .ACTIVE_LOW(32'd1)
+  ) tens_second (
+      .digit(tens_seconds),
       .blank(1'b0),
       .segments(HEX1)
   );
-  seven_segment ones_seconds (
-      .digit(seconds[3:0]),
+  seven_segment #(
+      .ACTIVE_LOW(32'd1)
+  ) ones_second (
+      .digit(ones_seconds),
       .blank(1'b0),
       .segments(HEX0)
   );
