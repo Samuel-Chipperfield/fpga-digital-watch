@@ -17,6 +17,7 @@ module top_time_display_v1 #(
   localparam logic [1:0] Hz_25 = 2'b01;
   localparam logic [1:0] Hz_0 = 2'b10;
   localparam logic [1:0] Hz_500 = 2'b11;
+
   logic [1:0] state;
   logic adj_clk;
   logic tick_1hz, tick_25hz, tick_1khz;
@@ -54,6 +55,7 @@ module top_time_display_v1 #(
       .run (1'b1),
       .tick(tick_1khz)
   );
+  //gives the rate of the clk based on the sw. 
   always_comb begin
     unique case (state)
       Hz_1:   adj_clk = tick_1hz;

@@ -140,8 +140,7 @@ module user_top_timer_v1 #(
   assign hours_disp = hours;
   assign minutes_disp = minutes;
   assign seconds_disp = seconds;
-  assign led[9] = sw[9] && burrow_out_hours;
-  assign led[8:0] = sw[8:0];
+  assign led[9:0] = '0;
   assign blank_hours = (mode_enable[2] & !pwm_out);
   assign blank_minutes = (mode_enable[1] & !pwm_out);
   assign blank_seconds = (mode_enable[0] & !pwm_out);

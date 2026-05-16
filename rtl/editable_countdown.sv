@@ -26,12 +26,15 @@ module editable_countdown #(
   logic tick_event;
   logic dec_event;
   logic inc_event;
+  // The count should be based on if a tick is input, or if in edit mode and incremented or deceremented. 
   assign tick_event = !edit_mode && tick && !clr;
   assign dec_event  = dec && edit_mode && !inc && !clr;
   assign inc_event  = inc && !dec && edit_mode && !clr;
   logic enable;
   logic up;
+
   assign enable = dec_event || tick_event || inc_event;
+  // should only count up if inc event, when tick_event it should decrease. 
   assign up = (inc_event);
   assign borrow_out = (tick_event && (count == 0));
 

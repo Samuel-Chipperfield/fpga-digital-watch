@@ -30,7 +30,7 @@ module user_top_stopwatch_v1 #(
     output logic blank_minutes,
     output logic blank_seconds
 );
-  assign led = clk ? sw : ~sw;
+  assign led = 10'b0;
 
   assign blank_hours = button[2];
   assign blank_minutes = button[2];
@@ -44,11 +44,13 @@ module user_top_stopwatch_v1 #(
   logic [6:0] count_h;
   logic [5:0] count_m;
   logic [6:0] count_s;
+
   rising_edge_detector u_button_1 (
       .clk(clk),
       .sig_in(button[1]),
       .rise(rise_lap)
   );
+
   rising_edge_detector u_button_0 (
       .clk(clk),
       .sig_in(button[0]),
@@ -63,6 +65,7 @@ module user_top_stopwatch_v1 #(
       .counter_enable(counter_enable),
       .lap_hold(lap_hold)
   );
+
   stopwatch_counter #(
       .CYCLES_PER_SECOND(CYCLES_PER_SECOND)
   ) u_count (
@@ -73,6 +76,7 @@ module user_top_stopwatch_v1 #(
       .seconds(count_m),
       .centiseconds(count_s)
   );
+
   snapshot_mux #(
       .WIDTH(7)
   ) u_snap_sec (
@@ -81,6 +85,7 @@ module user_top_stopwatch_v1 #(
       .d(count_s),
       .q(seconds_disp)
   );
+
   snapshot_mux #(
       .WIDTH(7)
   ) u_snap_min (
@@ -89,6 +94,7 @@ module user_top_stopwatch_v1 #(
       .d({1'b0, count_m}),
       .q(minutes_disp)
   );
+
   snapshot_mux #(
       .WIDTH(7)
   ) u_snap_hr (

@@ -8,6 +8,7 @@ module button_hold_pulse #(
     output logic pulse
 );
   logic held;
+  // gives a pulse when the button is held for hold cycle, and is only high for one clock cycle. 
   button_hold_detect #(
       .HOLD_CYCLES(HOLD_CYCLES)
   ) u_detect (

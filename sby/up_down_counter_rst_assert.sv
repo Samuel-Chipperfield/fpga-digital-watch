@@ -42,7 +42,7 @@ module up_down_counter_rst_assert #(
   initial assert ((1 << WIDTH) > MAX);
 
   // Ensure count remains within range at all times
-  always @(*) assert (count <= MAX);
+ always @(*) assert (count <= MAX);
 
   // Check initial value
   initial a_init : assert (count == 0);

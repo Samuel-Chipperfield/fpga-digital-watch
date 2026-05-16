@@ -52,7 +52,7 @@ module user_top_watch_v1 #(
       .dec(seconds_dec),
       .count(seconds)
   );
-
+// minutes
   logic minutes_tick;
   logic minutes_edit;
   logic minutes_inc;
@@ -69,6 +69,7 @@ module user_top_watch_v1 #(
       .dec(minutes_dec),
       .count(minutes)
   );
+  //hours
   logic hours_tick;
   logic hours_edit;
   logic hours_inc;
@@ -85,6 +86,8 @@ module user_top_watch_v1 #(
       .dec(hours_dec),
       .count(hours)
   );
+
+  // rate generator
   restartable_rate_generator #(
       .CYCLE_COUNT(CYCLES_PER_SECOND)
   ) u_divider_1_Hz (

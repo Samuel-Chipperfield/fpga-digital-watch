@@ -13,8 +13,10 @@ module up_down_counter_rst #(
   localparam logic [WIDTH -1:0] Max = WIDTH'(MAX);
   initial count = '0;
   logic [WIDTH-1:0] next_count;
+  //ff
   always_ff @(posedge clk) count <= next_count;
-
+// next state logic. 
+// rst takes top priority, and then enable is needed, then the direction of the count depends on up. 
   always_comb begin
     if (rst == 1) next_count = WIDTH'(0);
     else begin

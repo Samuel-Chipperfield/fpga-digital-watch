@@ -12,6 +12,7 @@ module button_hold_detect #(
   logic count_rst;
   logic count_enable;
   logic [CountWidth-1:0] count;
+  //using the mod_n_counter, 
   mod_n_counter #(
       .N(CountMax + 1),
       .WIDTH(CountWidth)
@@ -21,7 +22,9 @@ module button_hold_detect #(
       .enable(count_enable),
       .count(count)
   );
+
   assign count_rst = !button;
   assign held = (count == CountWidth'(CountMax));
+  //once held is high then the counter should stop, and held should remain high. 
   assign count_enable = (button && !held);
 endmodule

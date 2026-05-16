@@ -16,7 +16,7 @@
 // ------------------------------------------------------------------
 `timescale 1ns / 1ps
 
-module user_top_watch_v4 #(
+module user_top_watch_v5 #(
     parameter int CYCLES_PER_SECOND = 50_000_000
 ) (
     input logic clk,
@@ -162,7 +162,6 @@ module user_top_watch_v4 #(
       .rst(!button[0]),
       .pwm_out(pulse_dec)
   );
-  // editing logic, for increments and decrements. 
   assign seconds_dec = (seconds_edit && (hold_dec && pulse_dec) && button[0]);
   assign seconds_inc = (seconds_edit && (hold_inc && pulse_inc) && button[1]);
   assign minutes_dec = (minutes_edit && (hold_dec && pulse_dec) && button[0]);
@@ -174,5 +173,12 @@ module user_top_watch_v4 #(
   assign minutes_edit = (mode_enable[1]);
   assign hours_edit = (mode_enable[2]);
 
+ knight_rider #(
+    .CYCLES_PER_SECOND(CYCLES_PER_SECOND)
+ ) u_knight (
+    .clk(clk),
+    .ride(hours_tick),
+    .led(led)
+ );
 
 endmodule

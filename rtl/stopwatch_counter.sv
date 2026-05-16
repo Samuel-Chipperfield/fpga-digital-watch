@@ -26,6 +26,7 @@ module stopwatch_counter #(
       .count1(seconds),
       .count0(centiseconds)
   );
+  //creates rate that should tick every centisecond. used in enable of the counter.
   restartable_rate_generator #(
       .CYCLE_COUNT((CYCLES_PER_SECOND / 100))
   ) u_rate_1centisecs (
