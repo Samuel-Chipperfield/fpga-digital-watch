@@ -12,9 +12,9 @@ module up_down_counter #(
   localparam logic [WIDTH -1:0] Max = WIDTH'(MAX);
   initial count = '0;
   logic [WIDTH-1:0] next_count;
-  // ff 
+  // ff
   always_ff @(posedge clk) if (enable) count <= next_count;
-// next state logic 
+  // next state logic
   always_comb begin
     if (up == 1) next_count = (count == Max) ? 0 : count + WIDTH'(1);
     else begin
