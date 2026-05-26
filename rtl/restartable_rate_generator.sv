@@ -11,7 +11,7 @@ module restartable_rate_generator #(
   logic running = 1'b0;
   // ff
   always_ff @(posedge clk) running <= run;
-//output logic. 
+  //output logic.
   assign tick = running & tick_qualifier;
   generate
     if (CYCLE_COUNT > 1) begin : g_general
@@ -28,10 +28,10 @@ module restartable_rate_generator #(
           .enable(enable_count),
           .count(count)
       );
-      // next_state logic 
+      // next_state logic
       assign rst_count = !running;
       assign enable_count = (tick_qualifier || running);
-      //output logic 
+      //output logic
       assign tick_qualifier = (count == CountWidth'(CYCLE_COUNT - 2));
     end else begin : g_special
       assign tick_qualifier = 1'b1;

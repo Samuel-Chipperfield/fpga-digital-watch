@@ -162,7 +162,7 @@ module user_top_watch_v4 #(
       .rst(!button[0]),
       .pwm_out(pulse_dec)
   );
-  // editing logic, for increments and decrements. 
+  // editing logic, for increments and decrements.
   assign seconds_dec = (seconds_edit && (hold_dec && pulse_dec) && button[0]);
   assign seconds_inc = (seconds_edit && (hold_inc && pulse_inc) && button[1]);
   assign minutes_dec = (minutes_edit && (hold_dec && pulse_dec) && button[0]);

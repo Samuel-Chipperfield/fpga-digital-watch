@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module user_top_timer_v1 #(
+module user_top_timer_v3 #(
     /* verilator lint_off UNUSEDPARAM */
     parameter int CYCLES_PER_SECOND = 50_000_000
     /* verilator lint_on UNUSEDPARAM */
@@ -32,7 +32,27 @@ module user_top_timer_v1 #(
   // When in set mode button[0] decments and button[1] increments, holding either ticks at 10Hz,
   // pressing button[3] again moves to minutes, then hours, then takes out of set mode, and returns to stop mode
   // when running the counter decrements, pressing button[0] pauses the timer, when the counter reaches 0 it stops and is held at zero.
-  logic running = 1'b0;
+  logic [1:0] state = 2'b00;
+  logic [1:0] next_state;
+
+  always_comb begin
+    case (state)
+      2'b00: begin
+        if (!(mode_enable == 0)) next_state = 2'b10;
+        else if (!zero && button[0]) next_state = 2'b01;
+        else next_state = state;
+      end
+      2'b01: begin
+        if (zero || button[0]) next_state = 2'b00;
+        else if (!(mode_enable == 0)) next_state = 2'b10;
+      end
+      2'b10:   if (mode_enable == 0) next_state = 2'b00;
+      default: next_state = state;
+    endcase
+  end
+  always_ff @(posedge clk) state <= next_state;
+  logic running;
+  assign running = (state == 2'b01);
   logic seconds_tick;
   logic seconds_edit;
   logic seconds_inc;
@@ -44,7 +64,7 @@ module user_top_timer_v1 #(
       .WIDTH(7)
   ) u_seconds (
       .clk(clk),
-      .tick(seconds_tick && !zero && running),
+      .tick(seconds_tick && (state == 2'b01)),
       .edit_mode(seconds_edit),
       .clr(seconds_edit && button_3_rise_r),
       .inc(seconds_inc),
@@ -105,23 +125,10 @@ module user_top_timer_v1 #(
       .CYCLE_COUNT(CYCLES_PER_SECOND)
   ) u_divider_1_Hz (
       .clk (clk),
-      .run (!edit && running),
+      .run ((state == 2'b01)),
       .tick(seconds_tick)
   );
   // count should be paused when button[0] is pressed and not in set mode;
-  logic button_0_rise;
-  logic button_0_rise_r;
-  always_ff @(posedge clk) button_0_rise_r <= button_0_rise;
-  rising_edge_detector u_pause (
-      .clk(clk),
-      .sig_in(button[0]),
-      .rise(button_0_rise)
-  );
-  always_ff @(posedge clk) begin
-    if (!(mode_enable == 3'b000)) running <= 1'b0;
-    else if (zero) running <= 1'b0;
-    else if (button_0_rise_r) running <= !running;
-  end
 
   // Count must stop at 00:00:00. so check at count, then if count = 0, then no ticks
   logic hours_0;
@@ -133,8 +140,8 @@ module user_top_timer_v1 #(
   assign seconds_0 = (seconds == 7'd0);
   assign zero = hours_0 && minutes_0 && seconds_0;
 
-  assign minutes_tick = burrow_out_seconds && running;
-  assign hours_tick = burrow_out_minutes && burrow_out_seconds && running;
+  assign minutes_tick = burrow_out_seconds;
+  assign hours_tick = burrow_out_minutes && burrow_out_seconds;
 
 
   assign hours_disp = hours;
@@ -188,7 +195,6 @@ module user_top_timer_v1 #(
       .button(button[0]),
       .pulse(hold_dec)
   );
-  logic edit;
   assign seconds_dec = (seconds_edit && ((hold_dec)));
   assign seconds_inc = (seconds_edit && ((hold_inc)));
   assign minutes_dec = (minutes_edit && (hold_dec));
@@ -199,7 +205,6 @@ module user_top_timer_v1 #(
   assign seconds_edit = (mode_enable == 3'b001);
   assign minutes_edit = (mode_enable == 3'b010);
   assign hours_edit = (mode_enable == 3'b100);
-  assign edit = seconds_edit || minutes_edit || hours_edit;
 
 `ifdef FORMAL
   assign probe_running = running;

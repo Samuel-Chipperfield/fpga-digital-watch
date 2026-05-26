@@ -12,7 +12,7 @@ module pwm_generator #(
 
   localparam int CountWidth = (PERIOD_CYCLES > 1) ? $clog2(PERIOD_CYCLES) + 1 : 1;
   logic [CountWidth-1:0] count;
-  //initialising a mod n counter to count for period cycles, should always be enabled, however reset based on input. 
+  //initialising a mod n counter to count for period cycles, should always be enabled, however reset based on input.
   mod_n_counter #(
       .N(PERIOD_CYCLES),
       .WIDTH(CountWidth)

@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 module edit_mode_selector #(
-    // amount of clock cycles needed to be held to enter edit mode. 
+    // amount of clock cycles needed to be held to enter edit mode.
     parameter int HOLD_CYCLES = 50_000_000
 ) (
     input logic clk,

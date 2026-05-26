@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-// hours minutes seconds counter 
+// hours minutes seconds counter
 // should count upwards and when seconds = 59, then minutes should increment, and when seconds = 59 and minutes = 59 hours should increment
 module hms_counter #(
     parameter int N_HOURS   = 24,

@@ -16,7 +16,7 @@
 // ------------------------------------------------------------------
 `timescale 1ns / 1ps
 
-module user_top_brightness_wrapper #(
+module user_top_brightness_timepiece_v2 #(
     parameter int CYCLES_PER_SECOND = 50000000
 ) (
     input logic clk,
@@ -32,16 +32,13 @@ module user_top_brightness_wrapper #(
 );
 
   localparam int CountWidth = $clog2(CYCLES_PER_SECOND / 1000);
-  localparam int Max = CYCLES_PER_SECOND / 1000;
-  logic [CountWidth-1:0] count;
-  //state
   logic [1:0] brightness;
+  localparam int Max = CYCLES_PER_SECOND / 1000;
   assign brightness = {sw[9], sw[8]};
-
   logic [2:0] app_blanking;
+  logic [CountWidth-1:0] count;
 
-
-  user_top_ #(
+  user_top_timepiece_v2 #(
       .CYCLES_PER_SECOND(CYCLES_PER_SECOND)
   ) u_top (
       .clk(clk),
@@ -66,17 +63,19 @@ module user_top_brightness_wrapper #(
       .count(count)
   );
   logic pwm;
-  // logic that defines the rate of the blanking rate.
   always_comb begin
     case (brightness)
-      2'b00: pwm = ((count < Max / 8));  // 12.5%
-      2'b01: pwm = (count < (Max / 4));  // 25%
-      2'b11: pwm = (count < (Max / 2));  // 50%
-      default pwm = 1'b1;  // rate of 1 sec 100%
+      2'b00: pwm = ((count < (Max / 8)));
+      2'b01: pwm = (count < (Max / 4));
+      2'b11: pwm = (count < (Max / 2));
+      default pwm = 1'b1;
     endcase
   end
-  // blank should be based on the output of the user top, or the rate from the brightness.
+
   assign blank_hours   = (app_blanking[2]) || !pwm;
   assign blank_minutes = (app_blanking[1]) || !pwm;
   assign blank_seconds = (app_blanking[0]) || !pwm;
+
+
 endmodule
+

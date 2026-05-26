@@ -28,7 +28,7 @@ module cascade_counter #(
       .count(count0)
   );
   logic enable_1;
-// The second counter should only run, when the first counter is equal to its maximum. 
+  // The second counter should only run, when the first counter is equal to its maximum.
   assign enable_1 = ((count0 == W0'(N0 - 1)) && enable);
   mod_n_counter #(
       .N(N1),
@@ -39,9 +39,9 @@ module cascade_counter #(
       .enable(enable_1),
       .count(count1)
   );
- logic enable_2;
- // The 3rd counter should only run when the first counter is at the max and the second counter is at the max. 
-   assign enable_2 = ((count1 == W1'(N1 - 1)) && enable_1 & enable);
+  logic enable_2;
+  // The 3rd counter should only run when the first counter is at the max and the second counter is at the max.
+  assign enable_2 = ((count1 == W1'(N1 - 1)) && enable_1 & enable);
   mod_n_counter #(
       .N(N2),
       .WIDTH(W2)

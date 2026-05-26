@@ -12,11 +12,11 @@ module stopwatch_control (
   initial counter_enable = 1'b0;
   initial counter_rst = 1'b0;
   initial lap_hold = 1'b0;
-// next state logic, if both are pressed nothing should happen, presses should be exclusive
+  // next state logic, if both are pressed nothing should happen, presses should be exclusive
   wire  both = rise_start_stop && rise_lap;
   wire  ss_only = rise_start_stop && !rise_lap;
   wire  lap_only = !rise_start_stop && rise_lap;
-//next state logic
+  //next state logic
   wire  next_enable = ss_only ? !counter_enable : counter_enable;
   wire  next_rst = lap_only && !counter_enable && !lap_hold && !counter_rst;
 
@@ -28,7 +28,7 @@ module stopwatch_control (
     else if (!counter_enable && lap_only) next_lap_hold = 1'b0;
     else next_lap_hold = lap_hold;
   end
-// ff to give outputs the next values. 
+  // ff to give outputs the next values.
   always_ff @(posedge clk) begin
     if (!both) begin
       counter_enable <= next_enable;
